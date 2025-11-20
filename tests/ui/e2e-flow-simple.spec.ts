@@ -15,6 +15,29 @@ test('login with correct credentials and verify order creation page', async ({ p
   const authPage = new LoginPage(page)
   await authPage.open()
   const orderCreationPage = await authPage.signIn(USERNAME, PASSWORD)
-  await orderCreationPage.statusButton.click({ force: true })
-  // verify at least few elements on the order creation page
+
+  await expect(orderCreationPage.mainpageLink).toBeDisabled()
+  await expect(orderCreationPage.userNameField).toBeVisible()
+  await expect(orderCreationPage.orderButton).toBeVisible()
+
+})
+
+test('login and create order', async ({ page }) => {
+  const authPage = new LoginPage(page)
+  await authPage.open()
+  const orderCreationPage = await authPage.signIn(USERNAME, PASSWORD)
+  await orderCreationPage.userNameField.fill(faker.lorem.word(5))
+  await orderCreationPage.phoneField.fill(faker.lorem.word(6))
+  //await orderCreationPage.commentField.fill(faker.lorem.word(5))
+  await orderCreationPage.orderButton.click()
+  await expect(orderCreationPage.orderCreatedButton).toBeVisible()
+
+})
+
+test('login and logout', async ({ page }) => {
+  const authPage = new LoginPage(page)
+  await authPage.open()
+  const orderCreationPage = await authPage.signIn(USERNAME, PASSWORD)
+  await orderCreationPage.logoutButton.click()
+  await expect(authPage.signInButton).toBeVisible()
 })
